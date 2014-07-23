@@ -557,6 +557,53 @@ void calcCourse(Course& trip)
     trip.setTotalCalories(ntotalcalories);
 }
 
+void displaySummary(Course& trip)
+{
+    for(auto l = trip.getLaps().begin(); l != trip.getLaps().end(); ++l)
+    {
+        cout << "Lap " << l->getLap()+1 << endl;
+        cout << "Trackpoints: " << l->getTotalTrackpoints() << endl;
+        cout << "Calories Burned: " << l->getCalories() << endl;
+        cout << "Date: " << l->getDate() << " (" << l->getTime() << ")" << endl;
+        cout << "Elapsed Time: " << l->getElapsedTime()/3600 << ":" << (l->getElapsedTime()%3600)/60 << ":" << (l->getElapsedTime()%3600)%60 << endl;
+        cout << "Activity Time: " << l->getActivityTime()/3600 << ":" << (l->getActivityTime()%3600)/60 << ":" << (l->getActivityTime()%3600)%60 << endl;
+        cout << "Moving Time: " << l->getMovingTime()/3600 << ":" << (l->getMovingTime()%3600)/60 << ":" << (l->getMovingTime()%3600)%60 << endl;
+        cout << "Distance: " << l->getCalculatedDistance() << " m" << endl;
+        cout << "Average Activity Speed: " << l->getAverageActivitySpeed() << " km/h" << endl;
+        cout << "Average Moving Speed: " << l->getAverageMovingSpeed() << " km/h" << endl;
+        cout << "Maximum Speed: " << l->getCalculatedMaxSpeed() << " km/h" << endl;
+        cout << "Elevation Gain: " << l->getElevationGained() << " m" << endl;
+        cout << "Elevation Loss: " << l->getElevationLost() << " m" << endl;
+        cout << "Maximum Elevation: " << l->getElevationMax() << " m" << endl;
+        cout << "Minimum Elevation: " << l->getElevationMin() << " m" << endl;
+        cout << "Maximum Heart Rate: " << l->getMaxHeartBpm() << " bpm" << endl;
+        cout << "Average Heart Rate: " << l->getAverageHeartBpm() << " bpm" << endl;
+        cout << "Minimum Heart Rate: " << l->getMinHeartBpm() << " bpm" << endl;
+        cout << "Maximum Cadence: " << l->getMaxCadence() << " rpm" << endl;
+        cout << "Average Cadence: " << l->getAverageCadence() << " rpm" << endl;
+        cout << "\n" << endl;
+    }
+    cout << "Course Total" << endl;
+    cout << "Total Trackpoints: " << trip.getTotalTrackpoints() << endl;
+    cout << "Calories Burned: " << trip.getTotalCalories() << endl;
+    cout << "Elapsed Time: " << trip.getElapsedTime()/3600 << ":" << (trip.getElapsedTime()%3600)/60 << ":" << (trip.getElapsedTime()%3600)%60 << endl;
+    cout << "Activity Time: " << trip.getActivityTime()/3600 << ":" << (trip.getActivityTime()%3600)/60 << ":" << (trip.getActivityTime()%3600)%60 << endl;
+    cout << "Moving Time: " << trip.getMovingTime()/3600 << ":" << (trip.getMovingTime()%3600)/60 << ":" << (trip.getMovingTime()%3600)%60 << endl;
+    cout << "Distance: " << trip.getDistance() << " m" << endl;
+    cout << "Average Activity Speed: " << trip.getAverageActivitySpeed() << " km/h" << endl;
+    cout << "Average Moving Speed: " << trip.getAverageMovingSpeed() << " km/h" << endl;
+    cout << "Maximum Speed: " << trip.getMaxSpeed() << " km/h" << endl;
+    cout << "Elevation Gain: " << trip.getElevationGained() << " m" << endl;
+    cout << "Elevation Loss: " << trip.getElevationLost() << " m" << endl;
+    cout << "Maximum Elevation: " << trip.getElevationMax() << " m" << endl;
+    cout << "Minimum Elevation: " << trip.getElevationMin() << " m" << endl;
+    cout << "Maximum Heart Rate: " << trip.getMaxHeartBpm() << " bpm" << endl;
+    cout << "Average Heart Rate: " << trip.getAverageHeartBpm() << " bpm" << endl;
+    cout << "Minimum Heart Rate: " << trip.getMinHeartBpm() << " bpm" << endl;
+    cout << "Maximum Cadence: " << trip.getMaxCadence() << " rpm" << endl;
+    cout << "Average Cadence: " << trip.getAverageCadence() << " rpm" << endl;
+}
+
 int main(int argc, char** argv)
 {
     /* Ensure that we have one argument - our xml filename */
@@ -585,6 +632,10 @@ int main(int argc, char** argv)
     /* Calculate Course synopsis */
     try { calcCourse(trip); }
     catch(...) { cout << "Unknown Exception from calcCourse()" << endl;  }
+
+    /* Print out Lap and Course Summary */
+    try { displaySummary(trip); }
+    catch(...) { cout << "Unknown Exception from displaySummary()" << endl;  }
 
     /* Execution was successful */
     return 0;
