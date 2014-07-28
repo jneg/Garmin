@@ -10,6 +10,7 @@ Works for Garmin xml or tcx files
 #include "trackpoint.hpp"
 #include "BadTrackpoint.hpp"
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <assert.h>
 #include <algorithm>
@@ -559,49 +560,228 @@ void calcCourse(Course& trip)
 
 void displaySummary(Course& trip)
 {
+    /* Print out the Laps Header */
+    printf("%s\n", string(154,'-').c_str());
+    printf("%-7s%-14s%-15s%-13s%-10s%-17s%-17s%-19s%-11s%-8s%-13s%-10s\n", "Lap", "Elapsed Time", "Activity Time", "Moving Time", "Distance", "Elevation Gain", "Elevation Loss", "Avg Moving Speed", "Max Speed", "Avg HR", "Avg Cadence", "Calories");
+    printf("%-7s%-14s%-15s%-13s%-10s%-17s%-17s%-19s%-11s%-8s%-13s%-10s\n", " (#)", "   (H:M:S)", "   (H:M:S)", "  (H:M:S)", "   (m)", "      (m)", "      (m)", "      (km/h)", "  (km/h)", " (bpm)", "   (rpm)", "   (C)");
+    printf("%s\n", string(154,'-').c_str());
+
+    /* Iterate through the laps and print out each set of data */
     for(auto l = trip.getLaps().begin(); l != trip.getLaps().end(); ++l)
     {
-        cout << "Lap " << l->getLap()+1 << endl;
-        cout << "Trackpoints: " << l->getTotalTrackpoints() << endl;
-        cout << "Calories Burned: " << l->getCalories() << endl;
-        cout << "Date: " << l->getDate() << " (" << l->getTime() << ")" << endl;
-        cout << "Elapsed Time: " << l->getElapsedTime()/3600 << ":" << (l->getElapsedTime()%3600)/60 << ":" << (l->getElapsedTime()%3600)%60 << endl;
-        cout << "Activity Time: " << l->getActivityTime()/3600 << ":" << (l->getActivityTime()%3600)/60 << ":" << (l->getActivityTime()%3600)%60 << endl;
-        cout << "Moving Time: " << l->getMovingTime()/3600 << ":" << (l->getMovingTime()%3600)/60 << ":" << (l->getMovingTime()%3600)%60 << endl;
-        cout << "Distance: " << l->getCalculatedDistance() << " m" << endl;
-        cout << "Average Activity Speed: " << l->getAverageActivitySpeed() << " km/h" << endl;
-        cout << "Average Moving Speed: " << l->getAverageMovingSpeed() << " km/h" << endl;
-        cout << "Maximum Speed: " << l->getCalculatedMaxSpeed() << " km/h" << endl;
-        cout << "Elevation Gain: " << l->getElevationGained() << " m" << endl;
-        cout << "Elevation Loss: " << l->getElevationLost() << " m" << endl;
-        cout << "Maximum Elevation: " << l->getElevationMax() << " m" << endl;
-        cout << "Minimum Elevation: " << l->getElevationMin() << " m" << endl;
-        cout << "Maximum Heart Rate: " << l->getMaxHeartBpm() << " bpm" << endl;
-        cout << "Average Heart Rate: " << l->getAverageHeartBpm() << " bpm" << endl;
-        cout << "Minimum Heart Rate: " << l->getMinHeartBpm() << " bpm" << endl;
-        cout << "Maximum Cadence: " << l->getMaxCadence() << " rpm" << endl;
-        cout << "Average Cadence: " << l->getAverageCadence() << " rpm" << endl;
-        cout << "\n" << endl;
+        /* Initialize temporary variables */
+        string elaHour, elaMin, elaSec, actHour, actMin, actSec, movHour, movMin, movSec, strElaTime, strActTime, strMovTime;
+
+        /* Process Elapsed Time */
+        if(l->getElapsedTime()/3600 !=0)
+        {
+            elaHour.append(to_string(l->getElapsedTime()/3600));
+            elaHour.append(":");
+        }
+
+        if((l->getElapsedTime()%3600)/60 < 10)
+        {
+            elaMin.append("0");
+            elaMin.append(to_string((l->getElapsedTime()%3600)/60));
+            elaMin.append(":");
+        }
+        else
+        {
+            elaMin.append(to_string((l->getElapsedTime()%3600)/60));
+            elaMin.append(":");
+        }
+
+        if((l->getElapsedTime()%3600)%60 < 10)
+        {
+            elaSec.append("0");
+            elaSec.append(to_string((l->getElapsedTime()%3600)%60));
+        }
+        else
+        {
+            elaSec.append(to_string((l->getElapsedTime()%3600)%60));
+        }
+
+        /* Process Activity Time */
+        if(l->getActivityTime()/3600 != 0)
+        {
+            actHour.append(to_string(l->getElapsedTime()/3600));
+            actHour.append(":");
+        }
+
+        if((l->getActivityTime()%3600)/60 < 10)
+        {
+            actMin.append("0");
+            actMin.append(to_string((l->getActivityTime()%3600)/60));
+            actMin.append(":");
+        }
+        else
+        {
+            actMin.append(to_string((l->getActivityTime()%3600)/60));
+            actMin.append(":");
+        }
+
+        if((l->getActivityTime()%3600)%60 < 10)
+        {
+            actSec.append("0");
+            actSec.append(to_string((l->getActivityTime()%3600)%60));
+        }
+        else
+        {
+            actSec.append(to_string((l->getActivityTime()%3600)%60));
+        }
+
+        /* Process Moving Time */
+        if(l->getMovingTime()/3600 != 0)
+        {
+            movHour.append(to_string(l->getMovingTime()/3600));
+            movHour.append(":");
+        }
+
+        if((l->getMovingTime()%3600)/60 < 10)
+        {
+            movMin.append("0");
+            movMin.append(to_string((l->getMovingTime()%3600)/60));
+            movMin.append(":");
+        }
+        else
+        {
+            movMin.append(to_string((l->getMovingTime()%3600)/60));
+            movMin.append(":");
+        }
+
+        if((l->getMovingTime()%3600)%60 < 10)
+        {
+            movSec.append("0");
+            movSec.append(to_string((l->getMovingTime()%3600)%60));
+        }
+        else
+        {
+            movSec.append(to_string((l->getMovingTime()%3600)%60));
+        }
+
+        /* Build the times */
+        strElaTime += elaHour;
+        strElaTime += elaMin;
+        strElaTime += elaSec;
+
+        strActTime += actHour;
+        strActTime += actMin;
+        strActTime += actSec;
+
+        strMovTime += movHour;
+        strMovTime += movMin;
+        strMovTime += movSec;
+
+        /* Print out data for every lap */
+        printf("%-7d%-14s%-15s%-13s%-10.1f%-17.1f%-17.1f%-19.2f%-11.2f%-8d%-13d%-10d\n", l->getLap()+1, strElaTime.c_str(), strActTime.c_str(), strMovTime.c_str(), l->getCalculatedDistance(), l->getElevationGained(), l->getElevationLost(), l->getAverageMovingSpeed(), l->getCalculatedMaxSpeed(), l->getAverageHeartBpm(), l->getAverageCadence(), l->getCalories());
     }
-    cout << "Course Total" << endl;
-    cout << "Total Trackpoints: " << trip.getTotalTrackpoints() << endl;
-    cout << "Calories Burned: " << trip.getTotalCalories() << endl;
-    cout << "Elapsed Time: " << trip.getElapsedTime()/3600 << ":" << (trip.getElapsedTime()%3600)/60 << ":" << (trip.getElapsedTime()%3600)%60 << endl;
-    cout << "Activity Time: " << trip.getActivityTime()/3600 << ":" << (trip.getActivityTime()%3600)/60 << ":" << (trip.getActivityTime()%3600)%60 << endl;
-    cout << "Moving Time: " << trip.getMovingTime()/3600 << ":" << (trip.getMovingTime()%3600)/60 << ":" << (trip.getMovingTime()%3600)%60 << endl;
-    cout << "Distance: " << trip.getDistance() << " m" << endl;
-    cout << "Average Activity Speed: " << trip.getAverageActivitySpeed() << " km/h" << endl;
-    cout << "Average Moving Speed: " << trip.getAverageMovingSpeed() << " km/h" << endl;
-    cout << "Maximum Speed: " << trip.getMaxSpeed() << " km/h" << endl;
-    cout << "Elevation Gain: " << trip.getElevationGained() << " m" << endl;
-    cout << "Elevation Loss: " << trip.getElevationLost() << " m" << endl;
-    cout << "Maximum Elevation: " << trip.getElevationMax() << " m" << endl;
-    cout << "Minimum Elevation: " << trip.getElevationMin() << " m" << endl;
-    cout << "Maximum Heart Rate: " << trip.getMaxHeartBpm() << " bpm" << endl;
-    cout << "Average Heart Rate: " << trip.getAverageHeartBpm() << " bpm" << endl;
-    cout << "Minimum Heart Rate: " << trip.getMinHeartBpm() << " bpm" << endl;
-    cout << "Maximum Cadence: " << trip.getMaxCadence() << " rpm" << endl;
-    cout << "Average Cadence: " << trip.getAverageCadence() << " rpm" << endl;
+
+    /* Initialize temporary variables */
+    string elaHour, elaMin, elaSec, actHour, actMin, actSec, movHour, movMin, movSec, strElaTime, strActTime, strMovTime;
+
+    /* Process Elapsed Time */
+    if(trip.getElapsedTime()/3600 !=0)
+    {
+        elaHour.append(to_string(trip.getElapsedTime()/3600));
+        elaHour.append(":");
+    }
+
+    if((trip.getElapsedTime()%3600)/60 < 10)
+    {
+        elaMin.append("0");
+        elaMin.append(to_string((trip.getElapsedTime()%3600)/60));
+        elaMin.append(":");
+    }
+    else
+    {
+        elaMin.append(to_string((trip.getElapsedTime()%3600)/60));
+        elaMin.append(":");
+    }
+
+    if((trip.getElapsedTime()%3600)%60 < 10)
+    {
+        elaSec.append("0");
+        elaSec.append(to_string((trip.getElapsedTime()%3600)%60));
+    }
+    else
+    {
+        elaSec.append(to_string((trip.getElapsedTime()%3600)%60));
+    }
+
+    /* Process Activity Time */
+    if(trip.getActivityTime()/3600 != 0)
+    {
+        actHour.append(to_string(trip.getElapsedTime()/3600));
+        actHour.append(":");
+    }
+
+    if((trip.getActivityTime()%3600)/60 < 10)
+    {
+        actMin.append("0");
+        actMin.append(to_string((trip.getActivityTime()%3600)/60));
+        actMin.append(":");
+    }
+    else
+    {
+        actMin.append(to_string((trip.getActivityTime()%3600)/60));
+        actMin.append(":");
+    }
+
+    if((trip.getActivityTime()%3600)%60 < 10)
+    {
+        actSec.append("0");
+        actSec.append(to_string((trip.getActivityTime()%3600)%60));
+    }
+    else
+    {
+        actSec.append(to_string((trip.getActivityTime()%3600)%60));
+    }
+
+    /* Process Moving Time */
+    if(trip.getMovingTime()/3600 != 0)
+    {
+        movHour.append(to_string(trip.getMovingTime()/3600));
+        movHour.append(":");
+    }
+
+    if((trip.getMovingTime()%3600)/60 < 10)
+    {
+        movMin.append("0");
+        movMin.append(to_string((trip.getMovingTime()%3600)/60));
+        movMin.append(":");
+    }
+    else
+    {
+        movMin.append(to_string((trip.getMovingTime()%3600)/60));
+        movMin.append(":");
+    }
+
+    if((trip.getMovingTime()%3600)%60 < 10)
+    {
+        movSec.append("0");
+        movSec.append(to_string((trip.getMovingTime()%3600)%60));
+    }
+    else
+    {
+        movSec.append(to_string((trip.getMovingTime()%3600)%60));
+    }
+
+    /* Build the times */
+    strElaTime += elaHour;
+    strElaTime += elaMin;
+    strElaTime += elaSec;
+
+    strActTime += actHour;
+    strActTime += actMin;
+    strActTime += actSec;
+
+    strMovTime += movHour;
+    strMovTime += movMin;
+    strMovTime += movSec;
+
+    printf("%s\n", string(154,'-').c_str());
+    printf("%-7s%-14s%-15s%-13s%-10.1f%-17.1f%-17.1f%-19.2f%-11.2f%-8d%-13d%-10d\n", "Total", strElaTime.c_str(), strActTime.c_str(), strMovTime.c_str(), trip.getDistance(), trip.getElevationGained(), trip.getElevationLost(), trip.getAverageMovingSpeed(), trip.getMaxSpeed(), trip.getAverageHeartBpm(), trip.getAverageCadence(), trip.getTotalCalories());
+    printf("%s\n", string(154,'-').c_str());
 }
 
 int main(int argc, char** argv)

@@ -1,4 +1,4 @@
- #ifndef COURSE_HPP
+#ifndef COURSE_HPP
 #define COURSE_HPP
 
 #include <vector>
